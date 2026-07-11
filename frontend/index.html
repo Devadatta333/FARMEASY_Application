@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmEasy</title>
+    <link rel="stylesheet" href="styles.css">
+
+
+</head>
+<body>
+    <header>
+        <h1>FarmEasy</h1>
+        <h3>Welcome to FarmEasy</h3>
+        <h5>your ultimate marketplace</h5>
+    </header>
+
+    <!-- this is container class -->
+    <div class="container">
+        <!-- silders interference -->
+        <div class="slider"></div>  
+            <div class="btn">
+                <button class="login">Login</button>
+                <button class="register">Register</button>
+        </div>
+        
+        <!-- form section that containes login and signup form -->
+         <div class="form_section">
+
+
+
+            <!-- login form -->
+             <div class="login-box">
+
+                <input type="text" 
+                    spellcheck="false"
+                    class="user_login"
+                    placeholder="Enter Your Username">
+                
+                <input type="password"
+                    class="password_login"
+                    placeholder="Enter Your Passowrd">
+
+                <button class="login_btn">Login</button>
+
+             </div>
+
+
+
+             <!-- register form -->
+              <div class="register-box">
+
+                <input type="text"
+                spellcheck="false"
+                class="user_reg"
+                placeholder="Enter Your Username">
+
+                <input type="password"
+                class="password_reg"
+                placeholder="Enter your Password">
+
+                <select class="role_reg">
+                    <option value="">Select Role</option>
+                    <option value="farmer">Farmer</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <button class="reg_btn">Register</button>
+              </div>
+         </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

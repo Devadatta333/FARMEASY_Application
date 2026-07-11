@@ -1,0 +1,188 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.4),
+            rgba(0,0,0,0.4)
+        ),
+        url("grass.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
+header{
+    text-align:center;
+    color:white;
+    margin-bottom:30px;
+}
+
+header h1{
+    font-size:3rem;
+    letter-spacing:2px;
+    margin-bottom:10px;
+    text-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+
+header h3{
+    font-weight:500;
+}
+
+header h5{
+    font-weight:300;
+    margin-top:5px;
+}
+
+.container{
+    width:420px;
+    background:rgba(255,255,255,0.15);
+
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.25);
+
+    border-radius:20px;
+    overflow:hidden;
+
+    box-shadow:
+    0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* Login/Register Buttons */
+
+.btn{
+    position:relative;
+    display:flex;
+    height:60px;
+}
+
+.btn button{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:white;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    z-index:2;
+}
+
+.slider{
+    position:absolute;
+    width:50%;
+    height:60px;
+    background:#2e7d32;
+    border-radius:0 0 15px 15px;
+
+    transition:0.4s ease;
+}
+
+.moveslider{
+    transform:translateX(100%);
+}
+
+/* Forms */
+
+.form_section{
+    display:flex;
+    width:840px;
+    transition:0.5s ease-in-out;
+}
+
+.form_section-move{
+    transform:translateX(-420px);
+}
+
+.login-box,
+.register-box{
+    width:420px;
+    padding:40px;
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+/* Inputs */
+
+input,
+select{
+    width:100%;
+    padding:14px;
+
+    border:none;
+    outline:none;
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,0.85);
+
+    font-size:15px;
+}
+
+input:focus,
+select:focus{
+    box-shadow:0 0 10px rgba(46,125,50,0.5);
+}
+
+/* Buttons */
+
+.login_btn,
+.reg_btn{
+    margin-top:10px;
+
+    padding:14px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#2e7d32;
+    color:white;
+
+    font-size:16px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.login_btn:hover,
+.reg_btn:hover{
+    background:#1b5e20;
+    transform:translateY(-2px);
+}
+
+/* Mobile */
+
+@media(max-width:500px){
+
+    .container{
+        width:95%;
+    }
+
+    .login-box,
+    .register-box{
+        width:95vw;
+    }
+
+    .form_section{
+        width:190vw;
+    }
+
+    .form_section-move{
+        transform:translateX(-95vw);
+    }
+}
