@@ -1,10 +1,22 @@
-import express from "express"
-import { registerUser, loginUser } from "../controllers/authController.js";
+import express from "express";
+import {
+  registerUser,
+  loginUser,
+  googleAuth,
+  forgotPassword,
+  resetPassword,
+  getMe,
+} from "../controllers/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
-const router=express.Router();
+const router = express.Router();
 
-router.post("/register",registerUser);
-router.post("/login",loginUser);
-
+// Authentication Endpoints
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.post("/google", googleAuth);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:resetToken", resetPassword);
+router.get("/me", protect, getMe);
 
 export default router;

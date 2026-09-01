@@ -108,7 +108,10 @@ loginBtn.addEventListener("click", async () => {
     }
 });
 
-
+document.getElementById("google").onclick=()=>{
+window.location.href=
+"http://localhost:3333/api/auth/google";
+}
 
 // //now the JWT part
 // console.log(localStorage.getItem("token"));
