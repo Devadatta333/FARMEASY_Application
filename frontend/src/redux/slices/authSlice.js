@@ -131,6 +131,11 @@ const authSlice = createSlice({
       state.error = null;
       state.successMessage = null;
     },
+    updateUserData: (state, action) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+      }
+    },
     clearMessages: (state) => {
       state.error = null;
       state.successMessage = null;
@@ -238,5 +243,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearMessages } = authSlice.actions;
+export const { logout, updateUserData, clearMessages } = authSlice.actions;
 export default authSlice.reducer;

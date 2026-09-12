@@ -1,31 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sprout, Home } from 'lucide-react';
+import { Sprout, ArrowLeft, Compass } from 'lucide-react';
+import { Button } from '../components/ui';
 
-const NotFound = () => {
+export default function NotFound() {
   return (
-    <div className="min-h-[75vh] flex items-center justify-center px-4">
-      <div className="max-w-md w-full text-center space-y-6 bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
-          <Sprout className="w-10 h-10" />
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 bg-[#fbfcf8]">
+      <div className="max-w-md w-full text-center space-y-6 bg-white p-8 sm:p-10 rounded-3xl shadow-elevated border border-slate-100">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center shadow-subtle">
+          <Compass className="w-8 h-8 stroke-[1.75]" />
         </div>
+
         <div>
-          <h1 className="text-4xl font-black text-slate-900">404</h1>
-          <h2 className="text-lg font-bold text-slate-700 mt-1">Page Not Found</h2>
-          <p className="mt-2 text-xs text-slate-500">
-            The page you are looking for does not exist or has been moved.
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+            Error 404
+          </span>
+          <h1 className="text-3xl font-extrabold font-display text-slate-900 mt-3 tracking-tight">
+            Off the Beaten Trail
+          </h1>
+          <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+            The field or page you are navigating towards does not exist or may have been relocated.
           </p>
         </div>
-        <Link
-          to="/"
-          className="inline-flex items-center space-x-2 py-3 px-6 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors shadow-md"
-        >
-          <Home className="w-4 h-4" />
-          <span>Back to Home</span>
-        </Link>
+
+        <div className="pt-2">
+          <Link to="/">
+            <Button
+              variant="primary"
+              size="md"
+              className="w-full"
+              leftIcon={<ArrowLeft className="w-4 h-4" />}
+            >
+              Return to Marketplace Home
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
-};
-
-export default NotFound;
+}

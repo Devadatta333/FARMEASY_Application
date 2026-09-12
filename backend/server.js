@@ -8,6 +8,8 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -42,6 +44,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Error Handling Middlewares
 app.use(notFound);

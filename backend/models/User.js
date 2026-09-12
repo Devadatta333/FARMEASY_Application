@@ -56,6 +56,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    address: {
+      streetAddress: { type: String, default: "" },
+      city: { type: String, default: "" },
+      state: { type: String, default: "" },
+      pincode: { type: String, default: "" },
+    },
     resetPasswordToken: {
       type: String,
       default: null,
@@ -63,6 +69,25 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpires: {
       type: Date,
       default: null,
+    },
+    preferences: {
+      theme: {
+        type: String,
+        enum: ["light", "dark", "system"],
+        default: "light",
+      },
+      emailNotifications: {
+        type: Boolean,
+        default: true,
+      },
+      orderNotifications: {
+        type: Boolean,
+        default: true,
+      },
+      promotionalEmails: {
+        type: Boolean,
+        default: false,
+      },
     },
   },
   {

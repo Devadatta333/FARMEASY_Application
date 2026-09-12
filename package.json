@@ -1,0 +1,13 @@
+{
+  "name": "2nd_express_project",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix backend run dev",
+    "start": "npm --prefix backend run start"
+  },
+  "dependencies": {
+    "express-session": "^1.19.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}

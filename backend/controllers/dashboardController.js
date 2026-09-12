@@ -1,55 +1,104 @@
 import User from "../models/User.js";
+import Product from "../models/Product.js";
+import Order from "../models/Order.js";
+import Wishlist from "../models/Wishlist.js";
+
+// Category images mapping for categories
+const CATEGORY_IMAGES = {
+  Fruits: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=600&q=80",
+  Vegetables: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80",
+  Grains: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80",
+  Organic: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80",
+  Dairy: "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80",
+  Spices: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80",
+  Seeds: "https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&w=600&q=80",
+  Other: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80",
+};
 
 // @desc    Get Farmer Dashboard Statistics & Activities
 // @route   GET /api/dashboard/farmer
 // @access  Private (Farmer only)
 export const getFarmerDashboardStats = async (req, res, next) => {
   try {
-    const farmer = await User.findById(req.user._id);
+    const farmerId = req.user._id;
+    const farmer = await User.findById(farmerId);
 
-    // Initial placeholder/scalable statistics for Farmer
+    // 1. Real total products listed by this farmer
+    const totalProducts = await Product.countDocuments({ farmer: farmerId });
+
+    // 2. Real total orders containing this farmer's products
+    const totalOrders = await Order.countDocuments({ "orderItems.farmer": farmerId });
+
+    // 3. Real pending orders for this farmer
+    const pendingOrders = await Order.countDocuments({
+      "orderItems.farmer": farmerId,
+      orderStatus: { $in: ["Pending", "Confirmed", "Processing"] },
+    });
+
+    // 4. Real total revenue calculated from non-cancelled order items
+    const revenueResult = await Order.aggregate([
+      { $match: { orderStatus: { $ne: "Cancelled" } } },
+      { $unwind: "$orderItems" },
+      { $match: { "orderItems.farmer": farmerId } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: { $multiply: ["$orderItems.price", "$orderItems.quantity"] } },
+        },
+      },
+    ]);
+    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
+
     const stats = {
-      totalProducts: 12,
-      totalOrders: 48,
-      totalRevenue: 24500, // ₹ 24,500
-      pendingOrders: 5,
+      totalProducts,
+      totalOrders,
+      totalRevenue,
+      pendingOrders,
     };
 
-    const recentActivities = [
-      {
-        id: 1,
-        type: "product_added",
-        title: "Added Fresh Organic Tomatoes",
-        timestamp: "2 hours ago",
-        details: "Quantity: 50 kg @ ₹40/kg",
-      },
-      {
-        id: 2,
+    // 5. Build real activity feed from latest product additions & order updates
+    const recentProducts = await Product.find({ farmer: farmerId })
+      .sort({ createdAt: -1 })
+      .limit(3);
+
+    const recentOrders = await Order.find({ "orderItems.farmer": farmerId })
+      .populate("user", "name")
+      .sort({ createdAt: -1 })
+      .limit(3);
+
+    const recentActivities = [];
+
+    recentOrders.forEach((ord) => {
+      const farmerItems = ord.orderItems.filter(
+        (it) => it.farmer && it.farmer.toString() === farmerId.toString()
+      );
+      const itemNames = farmerItems.map((i) => `${i.quantity} ${i.unit} ${i.name}`).join(", ");
+      recentActivities.push({
+        id: `ord-${ord._id}`,
         type: "order_received",
-        title: "Order #FE-8921 Received",
-        timestamp: "5 hours ago",
-        details: "Consumer: Priya Sharma • 10 kg Alphonso Mangoes",
-      },
-      {
-        id: 3,
-        type: "product_updated",
-        title: "Updated Stock for Organic Spinach",
-        timestamp: "1 day ago",
-        details: "New Stock: 30 Bunches",
-      },
-      {
-        id: 4,
-        type: "order_shipped",
-        title: "Order #FE-8890 Shipped",
-        timestamp: "2 days ago",
-        details: "Consumer: Ramesh Kumar • Express Delivery",
-      },
-    ];
+        title: `Order #${ord.orderNumber} ${ord.orderStatus}`,
+        timestamp: new Date(ord.createdAt).toLocaleDateString("en-IN", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        details: `Customer: ${ord.user?.name || "Consumer"} • ${itemNames || "Produce"} (₹${ord.totalAmount})`,
+      });
+    });
 
-    const salesAnalytics = {
-      months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-      revenue: [12000, 15000, 18000, 14000, 21000, 22500, 24500],
-    };
+    recentProducts.forEach((prod) => {
+      recentActivities.push({
+        id: `prod-${prod._id}`,
+        type: "product_added",
+        title: `Harvest Listed: ${prod.name}`,
+        timestamp: new Date(prod.createdAt).toLocaleDateString("en-IN", {
+          month: "short",
+          day: "numeric",
+        }),
+        details: `Stock: ${prod.quantity} ${prod.unit} @ ₹${prod.price}/${prod.unit}`,
+      });
+    });
 
     return res.status(200).json({
       success: true,
@@ -62,7 +111,6 @@ export const getFarmerDashboardStats = async (req, res, next) => {
       },
       stats,
       recentActivities,
-      salesAnalytics,
     });
   } catch (error) {
     next(error);
@@ -74,107 +122,96 @@ export const getFarmerDashboardStats = async (req, res, next) => {
 // @access  Private (Consumer/User only)
 export const getConsumerDashboardStats = async (req, res, next) => {
   try {
-    const consumer = await User.findById(req.user._id);
+    const consumerId = req.user._id;
+    const consumer = await User.findById(consumerId);
+
+    // 1. Real total orders for this consumer
+    const totalOrders = await Order.countDocuments({ user: consumerId });
+
+    // 2. Real wishlist items count
+    const wishlistItems = await Wishlist.countDocuments({ user: consumerId });
+
+    // 3. Real total active produce available
+    const totalProduceAvailable = await Product.countDocuments({ isAvailable: true });
 
     const stats = {
-      totalOrders: 8,
-      cartItems: 3,
-      wishlistItems: 12,
-      recentlyViewed: 15,
+      totalOrders,
+      wishlistItems,
+      recentlyViewed: totalProduceAvailable,
     };
 
-    const featuredCategories = [
+    // 4. Real category counts from Product collection
+    const categoryCountsAgg = await Product.aggregate([
+      { $match: { isAvailable: true } },
       {
-        id: "fruits",
-        name: "Fresh Fruits",
-        image: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=600&q=80",
-        count: "24 items",
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+          firstImg: { $first: "$images" },
+        },
       },
-      {
-        id: "vegetables",
-        name: "Organic Vegetables",
-        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80",
-        count: "42 items",
-      },
-      {
-        id: "grains",
-        name: "Grains & Pulses",
-        image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80",
-        count: "18 items",
-      },
-      {
-        id: "organic",
-        name: "Dairy & Natural Honey",
-        image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80",
-        count: "15 items",
-      },
-    ];
+    ]);
 
-    const recommendedProducts = [
-      {
-        id: "prod-1",
-        name: "Farm-Fresh Red Tomatoes",
-        category: "Vegetables",
-        farmerName: "Ramesh Patel (Gujarat)",
-        price: 35,
-        unit: "kg",
+    const featuredCategories = categoryCountsAgg.map((cat) => {
+      let image = CATEGORY_IMAGES[cat._id] || CATEGORY_IMAGES.Other;
+      if (cat.firstImg && cat.firstImg.length > 0) {
+        const rawUrl = typeof cat.firstImg[0] === 'string' ? cat.firstImg[0] : cat.firstImg[0]?.url;
+        if (rawUrl) image = rawUrl;
+      }
+      return {
+        id: cat._id.toLowerCase(),
+        name: cat._id,
+        image,
+        count: `${cat.count} produce items`,
+      };
+    });
+
+    // 5. Fetch real recommended products
+    const rawRecommended = await Product.find({ isAvailable: true })
+      .populate("farmer", "name location")
+      .sort({ createdAt: -1 })
+      .limit(4);
+
+    const recommendedProducts = rawRecommended.map((prod) => {
+      let img = CATEGORY_IMAGES[prod.category] || CATEGORY_IMAGES.Other;
+      if (prod.images && prod.images.length > 0) {
+        img = typeof prod.images[0] === 'string' ? prod.images[0] : prod.images[0].url;
+      }
+      return {
+        id: prod._id,
+        _id: prod._id,
+        name: prod.name,
+        category: prod.category,
+        farmerName: prod.farmer?.name || "Verified Local Farmer",
+        price: prod.price,
+        unit: prod.unit || "kg",
         rating: 4.8,
-        reviewsCount: 32,
-        image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "prod-2",
-        name: "Organic Ratnagiri Alphonso Mangoes",
-        category: "Fruits",
-        farmerName: "Suresh Deshmukh (Maharashtra)",
-        price: 650,
-        unit: "dozen",
-        rating: 4.9,
-        reviewsCount: 88,
-        image: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "prod-3",
-        name: "Pure Wildflower Honey",
-        category: "Organic",
-        farmerName: "Green Earth Farms (Himachal)",
-        price: 320,
-        unit: "500g",
-        rating: 4.7,
-        reviewsCount: 19,
-        image: "https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=500&q=80",
-      },
-      {
-        id: "prod-4",
-        name: "Crisp Green Spinach (Palak)",
-        category: "Vegetables",
-        farmerName: "Anand Verma (Punjab)",
-        price: 25,
-        unit: "bunch",
-        rating: 4.6,
-        reviewsCount: 45,
-        image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=500&q=80",
-      },
-    ];
+        reviewsCount: 12,
+        image: img,
+      };
+    });
 
-    const recentOrders = [
-      {
-        id: "ORD-9081",
-        date: "2026-08-01",
-        farmer: "Ramesh Patel",
-        item: "Organic Tomatoes (5 kg)",
-        amount: 175,
-        status: "Delivered",
-      },
-      {
-        id: "ORD-9042",
-        date: "2026-07-28",
-        farmer: "Suresh Deshmukh",
-        item: "Alphonso Mangoes (2 dozen)",
-        amount: 1300,
-        status: "In Transit",
-      },
-    ];
+    // 6. Fetch real recent orders
+    const rawOrders = await Order.find({ user: consumerId })
+      .populate("orderItems.farmer", "name")
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    const recentOrders = rawOrders.map((ord) => {
+      const firstItem = ord.orderItems[0];
+      return {
+        id: ord.orderNumber || ord._id.toString(),
+        date: new Date(ord.createdAt).toLocaleDateString("en-IN", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        farmer: firstItem?.farmer?.name || "Local Farmer",
+        item: `${firstItem?.name || "Produce"} (${ord.orderItems.length} items)`,
+        amount: ord.totalAmount,
+        status: ord.orderStatus,
+      };
+    });
 
     return res.status(200).json({
       success: true,
@@ -203,78 +240,55 @@ export const getAdminDashboardStats = async (req, res, next) => {
     const totalUsersCount = await User.countDocuments();
     const farmersCount = await User.countDocuments({ role: "farmer" });
     const consumersCount = await User.countDocuments({ role: "consumer" });
+    const totalProductsCount = await Product.countDocuments();
+    const totalOrdersCount = await Order.countDocuments();
+
+    const pendingOrdersCount = await Order.countDocuments({
+      orderStatus: { $in: ["Pending", "Confirmed", "Processing"] },
+    });
+
+    // Compute total GMV / Revenue across non-cancelled orders
+    const gmvResult = await Order.aggregate([
+      { $match: { orderStatus: { $ne: "Cancelled" } } },
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+    ]);
+    const totalRevenue = gmvResult.length > 0 ? gmvResult[0].total : 0;
 
     const stats = {
       totalUsers: totalUsersCount,
       totalFarmers: farmersCount,
       totalConsumers: consumersCount,
-      totalProducts: 340,
-      totalOrders: 1250,
-      totalRevenue: 485000, // ₹ 4,85,000
-      pendingOrders: 18,
+      totalProducts: totalProductsCount,
+      totalOrders: totalOrdersCount,
+      totalRevenue,
+      pendingOrders: pendingOrdersCount,
     };
 
-    // Retrieve recent user registrations
+    // Retrieve real recent user registrations
     const recentUsersList = await User.find()
       .select("name email role createdAt")
       .sort({ createdAt: -1 })
       .limit(6);
 
-    const recentOrdersTable = [
-      {
-        id: "ORD-9102",
-        customer: "Anita Roy",
-        farmer: "Ramesh Patel",
-        product: "Organic Tomatoes",
-        amount: 350,
-        status: "Completed",
-      },
-      {
-        id: "ORD-9101",
-        customer: "Vikram Singh",
-        farmer: "Kisan Farmer Co-op",
-        product: "Basmati Rice (25kg)",
-        amount: 2200,
-        status: "Pending",
-      },
-      {
-        id: "ORD-9100",
-        customer: "Priya Sharma",
-        farmer: "Suresh Deshmukh",
-        product: "Ratnagiri Mangoes",
-        amount: 1300,
-        status: "Processing",
-      },
-      {
-        id: "ORD-9099",
-        customer: "Amitabh Verma",
-        farmer: "Green Leaf Organics",
-        product: "Fresh Broccoli (2kg)",
-        amount: 160,
-        status: "Completed",
-      },
-    ];
+    // Retrieve real recent order transactions
+    const rawAdminOrders = await Order.find()
+      .populate("user", "name")
+      .populate("orderItems.farmer", "name")
+      .sort({ createdAt: -1 })
+      .limit(6);
 
-    const analyticsData = {
-      userGrowth: [
-        { month: "Jan", users: 120 },
-        { month: "Feb", users: 210 },
-        { month: "Mar", users: 340 },
-        { month: "Apr", users: 480 },
-        { month: "May", users: 690 },
-        { month: "Jun", users: 890 },
-        { month: "Jul", users: totalUsersCount },
-      ],
-      salesOverview: [
-        { month: "Jan", sales: 45000 },
-        { month: "Feb", sales: 62000 },
-        { month: "Mar", sales: 85000 },
-        { month: "Apr", sales: 95000 },
-        { month: "May", sales: 120000 },
-        { month: "Jun", sales: 140000 },
-        { month: "Jul", sales: 185000 },
-      ],
-    };
+    const recentOrdersTable = rawAdminOrders.map((ord) => {
+      const buyerName = ord.user?.name || "Consumer";
+      const farmerName = ord.orderItems[0]?.farmer?.name || "Local Farmer";
+      return {
+        id: ord.orderNumber || ord._id.toString(),
+        customer: buyerName,
+        farmer: farmerName,
+        product: ord.orderItems.map((i) => i.name).join(", "),
+        amount: ord.totalAmount,
+        status: ord.orderStatus,
+      };
+    });
 
     return res.status(200).json({
       success: true,
@@ -282,7 +296,6 @@ export const getAdminDashboardStats = async (req, res, next) => {
       stats,
       recentUsers: recentUsersList,
       recentOrders: recentOrdersTable,
-      analytics: analyticsData,
     });
   } catch (error) {
     next(error);

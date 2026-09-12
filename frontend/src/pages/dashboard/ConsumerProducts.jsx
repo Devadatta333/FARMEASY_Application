@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import ConsumerProductCard from '../../components/products/ConsumerProductCard';
 import ProductDetailsModal from '../../components/products/ProductDetailsModal';
+import FarmerConflictModal from '../../components/products/FarmerConflictModal';
 import { getAllProductsApi } from '../../api/productApi';
+import { addToCart, replaceCartWithProduct } from '../../redux/slices/cartSlice';
+import { fetchWishlistIds } from '../../redux/slices/wishlistSlice';
 import {
   Search,
   SlidersHorizontal,
@@ -30,11 +35,20 @@ const CATEGORIES = [
 ];
 
 const ConsumerProducts = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    dispatch(fetchWishlistIds());
+  }, [dispatch]);
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filters & Query state
-  const [searchTerm, setSearchTerm] = useState('');
+  // Filters & Query state (sync initial search term with URL search params)
+  const initialQuery = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortOption, setSortOption] = useState('latest');
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,6 +58,18 @@ const ConsumerProducts = () => {
   // Modal State
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  // Single Farmer Conflict Modal state
+  const [conflictModalOpen, setConflictModalOpen] = useState(false);
+  const [pendingProduct, setPendingProduct] = useState(null);
+
+  // Update local search state if URL param changes
+  useEffect(() => {
+    const q = searchParams.get('search');
+    if (q !== null) {
+      setSearchTerm(q);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchProducts();
@@ -87,9 +113,39 @@ const ConsumerProducts = () => {
 
   const handleAddToCart = (product) => {
     const qty = product.selectedQuantity || 1;
-    toast.success(`Added ${qty} ${product.unit || 'unit'} of "${product.name}" to cart!`, {
-      icon: '🛒',
-    });
+    const incomingFarmerId = product.farmer?._id || product.farmer || product.farmerId;
+    const incomingFarmerName = product.farmer?.name || product.farmerName || 'Verified Local Farmer';
+
+    if (cart.items.length > 0 && cart.farmerId && incomingFarmerId && String(cart.farmerId) !== String(incomingFarmerId)) {
+      setPendingProduct({ product, quantity: qty });
+      setConflictModalOpen(true);
+      return;
+    }
+
+    dispatch(
+      addToCart({
+        product: {
+          _id: product._id || String(Date.now()),
+          name: product.name,
+          price: product.price,
+          unit: product.unit || 'kg',
+          category: product.category || 'Produce',
+          images: product.images,
+          farmer: product.farmer,
+          farmerName: incomingFarmerName,
+        },
+        quantity: qty,
+      })
+    );
+    toast.success(`Added ${qty} ${product.unit || 'unit'} of "${product.name}" to cart! 🛒`);
+  };
+
+  const handleConfirmConflictReplace = () => {
+    if (!pendingProduct) return;
+    const { product, quantity } = pendingProduct;
+    dispatch(replaceCartWithProduct({ product, quantity }));
+    toast.success(`Cleared cart & added "${product.name}"! 🛒`);
+    setPendingProduct(null);
   };
 
   return (
@@ -140,7 +196,14 @@ const ConsumerProducts = () => {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (e.target.value) {
+                    setSearchParams({ search: e.target.value });
+                  } else {
+                    setSearchParams({});
+                  }
+                }}
                 placeholder="Search tomatoes, mangoes, rice..."
                 className="w-full pl-10 pr-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors"
               />
@@ -250,6 +313,7 @@ const ConsumerProducts = () => {
                 setSearchTerm('');
                 setSelectedCategory('All');
                 setCurrentPage(1);
+                setSearchParams({});
               }}
               className="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20"
             >
@@ -265,6 +329,22 @@ const ConsumerProducts = () => {
         onClose={() => setIsDetailsOpen(false)}
         product={selectedProduct}
         onAddToCart={handleAddToCart}
+      />
+
+      {/* Farmer Conflict Modal */}
+      <FarmerConflictModal
+        isOpen={conflictModalOpen}
+        onClose={() => {
+          setConflictModalOpen(false);
+          setPendingProduct(null);
+        }}
+        onConfirm={handleConfirmConflictReplace}
+        currentFarmerName={cart.farmerName || 'Another Farmer'}
+        newFarmerName={
+          pendingProduct?.product?.farmer?.name ||
+          pendingProduct?.product?.farmerName ||
+          'New Farmer'
+        }
       />
     </DashboardLayout>
   );

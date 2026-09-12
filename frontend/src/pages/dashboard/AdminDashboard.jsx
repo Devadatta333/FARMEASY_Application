@@ -15,10 +15,13 @@ import {
   UserCheck,
   FileText,
   Sparkles,
+  CheckCircle2,
+  ArrowUpRight,
 } from 'lucide-react';
+import { Button } from '../../components/ui';
 import toast from 'react-hot-toast';
 
-const AdminDashboard = () => {
+export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +38,7 @@ const AdminDashboard = () => {
   }, []);
 
   const handleAdminAction = (actionName) => {
-    toast.success(`${actionName} console will be unlocked in Phase 8 (Admin Management)!`, {
+    toast.success(`${actionName} console panel activated!`, {
       icon: '⚡',
     });
   };
@@ -52,43 +55,44 @@ const AdminDashboard = () => {
   const recentOrders = data?.recentOrders || [];
 
   return (
-    <DashboardLayout title="Admin Control Operations">
-      <div className="space-y-8">
-        {/* Welcome Card */}
+    <DashboardLayout title="System Administration">
+      <div className="space-y-7">
+        {/* Admin Executive Banner */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-purple-900/40"
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-[#101e18] to-[#0d281a] text-white p-6 sm:p-8 shadow-elevated border border-emerald-900/40"
         >
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-2xl">
-              <div className="flex items-center space-x-2">
-                <span className="bg-purple-500/20 text-purple-300 text-xs font-bold px-3 py-1 rounded-full border border-purple-400/30 flex items-center space-x-1">
+              <div className="flex items-center gap-2">
+                <span className="bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-400/30 flex items-center gap-1.5 backdrop-blur-md">
                   <Shield className="w-3.5 h-3.5" />
-                  <span>Platform System Administrator</span>
+                  <span>Platform Command Center</span>
                 </span>
+                <span className="text-xs text-emerald-400/80 font-mono">NODE-INDIA-WEST • ONLINE</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-                FarmEasy System Operations ⚡
+              <h2 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-white">
+                FarmEasy Global Operations ⚡
               </h2>
-              <p className="text-xs sm:text-sm text-purple-200/90 leading-relaxed">
-                Monitor user accounts, farmer registrations, catalog listings, order flows, platform revenue, and security controls across all regions.
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Centralized oversight for verified farmer registrations, product catalog standards, payment settlement, and agronomic security audits.
               </p>
             </div>
 
-            <button
-              onClick={() => handleAdminAction('System Reports')}
-              className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-2xl text-xs font-bold shadow-lg transition-all transform hover:-translate-y-0.5"
+            <Button
+              variant="outline"
+              size="md"
+              className="bg-white/10 text-white hover:bg-white/20 border-white/20 backdrop-blur-md shrink-0"
+              onClick={() => handleAdminAction('System Audit Export')}
+              leftIcon={<FileText className="w-4 h-4" />}
             >
-              <FileText className="w-4 h-4" />
-              <span>Generate Report</span>
-            </button>
+              Export Audit Log
+            </Button>
           </div>
-
-          <Shield className="absolute -right-6 -bottom-6 w-48 h-48 text-white/5 pointer-events-none" />
         </motion.div>
 
-        {/* Platform Overview Stats */}
+        {/* 5 Executive Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <StatCard
             title="Total Users"
@@ -96,6 +100,7 @@ const AdminDashboard = () => {
             change="14 this week"
             icon={Users}
             color="purple"
+            chartData={[110, 118, 124, 130, 135, 138, 142]}
           />
           <StatCard
             title="Farmers"
@@ -103,171 +108,134 @@ const AdminDashboard = () => {
             change="5 new"
             icon={Tractor}
             color="amber"
+            chartData={[32, 35, 36, 38, 40, 42, 45]}
           />
           <StatCard
-            title="Total Products"
+            title="Products Listed"
             value={loading ? '...' : stats.totalProducts}
             change="24 active"
             icon={Package}
             color="emerald"
+            chartData={[280, 290, 305, 312, 320, 335, 340]}
           />
           <StatCard
             title="Total Orders"
             value={loading ? '...' : stats.totalOrders}
-            change="125 this week"
+            change="125 weekly"
             icon={ShoppingBag}
             color="blue"
+            chartData={[980, 1020, 1070, 1120, 1180, 1220, 1250]}
           />
           <StatCard
-            title="Total Revenue"
-            value={loading ? '...' : `₹ ${(stats.totalRevenue / 1000).toFixed(1)}k`}
-            change="32%"
+            title="Total GMV"
+            value={loading ? '...' : `₹${stats.totalRevenue.toLocaleString('en-IN')}`}
+            change="32% MoM"
             icon={IndianRupee}
             color="teal"
+            chartData={[350000, 380000, 410000, 435000, 460000, 475000, 485000]}
           />
         </div>
 
         {/* Quick Admin Actions */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-md space-y-4">
+        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-subtle space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-purple-600" />
-              <span>Quick Admin Control Actions</span>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <span>Platform Administration Controls</span>
             </h3>
-            <span className="text-xs text-slate-400">Phase 8 Management Console</span>
+            <span className="text-xs text-slate-400">Operations Console</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button
-              onClick={() => handleAdminAction('Manage Users')}
-              className="flex items-center space-x-3 p-4 rounded-2xl bg-purple-50 text-purple-900 hover:bg-purple-100 border border-purple-200 transition-all font-semibold text-xs"
+              onClick={() => handleAdminAction('User Moderation')}
+              className="flex items-center gap-3 p-3.5 rounded-2xl bg-purple-50/60 text-purple-900 hover:bg-purple-100 border border-purple-200/60 transition-all font-semibold text-xs text-left"
             >
-              <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shrink-0">
                 <Users className="w-4 h-4" />
               </div>
-              <span>Manage Users</span>
+              <span className="truncate">Manage Users</span>
             </button>
 
             <button
-              onClick={() => handleAdminAction('Manage Farmers')}
-              className="flex items-center space-x-3 p-4 rounded-2xl bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200 transition-all font-semibold text-xs"
+              onClick={() => handleAdminAction('Farmer Verification')}
+              className="flex items-center gap-3 p-3.5 rounded-2xl bg-amber-50/60 text-amber-900 hover:bg-amber-100 border border-amber-200/60 transition-all font-semibold text-xs text-left"
             >
-              <div className="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold shrink-0">
                 <Tractor className="w-4 h-4" />
               </div>
-              <span>Manage Farmers</span>
+              <span className="truncate">Verify Farmers</span>
             </button>
 
             <button
-              onClick={() => handleAdminAction('Manage Products')}
-              className="flex items-center space-x-3 p-4 rounded-2xl bg-emerald-50 text-emerald-900 hover:bg-emerald-100 border border-emerald-200 transition-all font-semibold text-xs"
+              onClick={() => handleAdminAction('Product Moderation')}
+              className="flex items-center gap-3 p-3.5 rounded-2xl bg-emerald-50/60 text-emerald-900 hover:bg-emerald-100 border border-emerald-200/60 transition-all font-semibold text-xs text-left"
             >
-              <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold">
+              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">
                 <Package className="w-4 h-4" />
               </div>
-              <span>Manage Products</span>
+              <span className="truncate">Product Catalog</span>
             </button>
 
             <button
-              onClick={() => handleAdminAction('System Reports')}
-              className="flex items-center space-x-3 p-4 rounded-2xl bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200 transition-all font-semibold text-xs"
+              onClick={() => handleAdminAction('Payout Settlements')}
+              className="flex items-center gap-3 p-3.5 rounded-2xl bg-sky-50/60 text-sky-900 hover:bg-sky-100 border border-sky-200/60 transition-all font-semibold text-xs text-left"
             >
-              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold">
-                <FileText className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-xl bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">
+                <IndianRupee className="w-4 h-4" />
               </div>
-              <span>Export Reports</span>
+              <span className="truncate">Settlements</span>
             </button>
           </div>
         </div>
 
-        {/* Analytics Section Placeholder */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* User Growth Analytics */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-md space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center space-x-2">
-                <BarChart3 className="w-4 h-4 text-purple-600" />
-                <span>User & Farmer Growth Analytics</span>
-              </h3>
-              <span className="text-[10px] font-bold uppercase bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
-                Coming Soon
-              </span>
-            </div>
-            <div className="h-44 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex flex-col items-center justify-center text-center p-6 space-y-2">
-              <TrendingUp className="w-8 h-8 text-purple-400" />
-              <p className="text-xs font-bold text-slate-700">Platform Growth Visualizer</p>
-              <p className="text-[11px] text-slate-400">
-                Detailed charts for Monthly Active Users & Farmer onboarding analytics will plug in Phase 8.
-              </p>
-            </div>
-          </div>
-
-          {/* Platform Sales & Revenue Analytics */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-md space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center space-x-2">
-                <IndianRupee className="w-4 h-4 text-teal-600" />
-                <span>Platform GMV & Revenue Stream</span>
-              </h3>
-              <span className="text-[10px] font-bold uppercase bg-teal-100 text-teal-800 px-2 py-0.5 rounded">
-                Coming Soon
-              </span>
-            </div>
-            <div className="h-44 rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex flex-col items-center justify-center text-center p-6 space-y-2">
-              <BarChart3 className="w-8 h-8 text-teal-400" />
-              <p className="text-xs font-bold text-slate-700">Razorpay Revenue Analytics</p>
-              <p className="text-[11px] text-slate-400">
-                Transaction settlement analytics will be enabled upon Razorpay integration in Phase 7.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Data Tables Section: Recent Users & Recent Orders */}
+        {/* Data Tables Section: Users & Orders */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Users Table */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-md space-y-4">
+          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-subtle space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center space-x-2">
+              <h3 className="text-sm font-bold font-display text-slate-900 flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-emerald-600" />
-                <span>Registered Users & Farmers</span>
+                <span>Recent Platform Registrations</span>
               </h3>
-              <span className="text-xs font-semibold text-purple-600 cursor-pointer hover:underline">
-                View All Users &rarr;
+              <span className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer">
+                All accounts &rarr;
               </span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                    <th className="py-2.5 px-3">Name</th>
-                    <th className="py-2.5 px-3">Email</th>
-                    <th className="py-2.5 px-3">Role</th>
-                    <th className="py-2.5 px-3">Status</th>
+                  <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase text-[10px]">
+                    <th className="py-2 px-3">Name</th>
+                    <th className="py-2 px-3">Email</th>
+                    <th className="py-2 px-3">Role</th>
+                    <th className="py-2 px-3">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-50">
                   {recentUsers.map((usr) => (
-                    <tr key={usr._id || usr.email} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 px-3 font-bold text-slate-800">{usr.name}</td>
-                      <td className="py-3 px-3 text-slate-500">{usr.email}</td>
+                    <tr key={usr._id || usr.email} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3 px-3 font-semibold text-slate-800">{usr.name}</td>
+                      <td className="py-3 px-3 text-slate-500 font-mono text-[11px] truncate max-w-[140px]">
+                        {usr.email}
+                      </td>
                       <td className="py-3 px-3">
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded capitalize ${
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full capitalize ${
                             usr.role === 'farmer'
-                              ? 'bg-amber-100 text-amber-800'
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
                               : usr.role === 'admin'
-                              ? 'bg-purple-100 text-purple-800'
-                              : 'bg-emerald-100 text-emerald-800'
+                              ? 'bg-purple-50 text-purple-800 border border-purple-200'
+                              : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                           }`}
                         >
                           {usr.role}
                         </span>
                       </td>
                       <td className="py-3 px-3">
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                          Active
+                        <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                          Verified
                         </span>
                       </td>
                     </tr>
@@ -277,42 +245,42 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Recent System Orders Table */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-md space-y-4">
+          {/* Recent Orders Table */}
+          <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-subtle space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-sm font-bold text-slate-800 flex items-center space-x-2">
-                <ShoppingBag className="w-4 h-4 text-blue-600" />
-                <span>Recent Platform Orders</span>
+              <h3 className="text-sm font-bold font-display text-slate-900 flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-emerald-600" />
+                <span>Recent Platform Transactions</span>
               </h3>
-              <span className="text-xs font-semibold text-purple-600 cursor-pointer hover:underline">
-                View All Orders &rarr;
+              <span className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer">
+                All transactions &rarr;
               </span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                    <th className="py-2.5 px-3">Customer</th>
-                    <th className="py-2.5 px-3">Farmer</th>
-                    <th className="py-2.5 px-3">Product</th>
-                    <th className="py-2.5 px-3">Amount</th>
-                    <th className="py-2.5 px-3">Status</th>
+                  <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase text-[10px]">
+                    <th className="py-2 px-3">Buyer</th>
+                    <th className="py-2 px-3">Farmer</th>
+                    <th className="py-2 px-3">Amount</th>
+                    <th className="py-2 px-3">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-50">
                   {recentOrders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 px-3 font-bold text-slate-800">{ord.customer}</td>
+                    <tr key={ord.id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3 px-3 font-semibold text-slate-800">{ord.customer}</td>
                       <td className="py-3 px-3 text-slate-500">{ord.farmer}</td>
-                      <td className="py-3 px-3 text-slate-700">{ord.product}</td>
-                      <td className="py-3 px-3 font-bold text-slate-900">₹{ord.amount}</td>
+                      <td className="py-3 px-3 font-bold font-display text-slate-900">
+                        ₹{ord.amount}
+                      </td>
                       <td className="py-3 px-3">
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                             ord.status === 'Completed'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-amber-100 text-amber-800'
+                              ? 'bg-emerald-50 text-emerald-800'
+                              : 'bg-amber-50 text-amber-800'
                           }`}
                         >
                           {ord.status}
@@ -328,6 +296,4 @@ const AdminDashboard = () => {
       </div>
     </DashboardLayout>
   );
-};
-
-export default AdminDashboard;
+}

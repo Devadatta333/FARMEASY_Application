@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toggleWishlistItem } from '../../redux/slices/wishlistSlice';
 import {
   X,
   ShoppingCart,
@@ -12,10 +14,15 @@ import {
   Minus,
   Truck,
   Sparkles,
+  Heart,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const ProductDetailsModal = ({ isOpen, onClose, product, onAddToCart }) => {
+  const dispatch = useDispatch();
+  const { wishlistIds } = useSelector((state) => state.wishlist || { wishlistIds: [] });
+  const isWishlisted = product ? wishlistIds.includes(product._id) : false;
+
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [orderQuantity, setOrderQuantity] = useState(1);
 
@@ -46,6 +53,17 @@ const ProductDetailsModal = ({ isOpen, onClose, product, onAddToCart }) => {
   const handleAdd = () => {
     onAddToCart({ ...product, selectedQuantity: orderQuantity });
     onClose();
+  };
+
+  const handleToggleWishlist = (e) => {
+    if (e) e.stopPropagation();
+    if (!product) return;
+    dispatch(toggleWishlistItem(product));
+    if (isWishlisted) {
+      toast.success(`Removed "${product.name}" from wishlist`);
+    } else {
+      toast.success(`Saved "${product.name}" to wishlist! ❤️`);
+    }
   };
 
   return (
@@ -89,8 +107,18 @@ const ProductDetailsModal = ({ isOpen, onClose, product, onAddToCart }) => {
                   {product.category}
                 </span>
 
+                {/* Wishlist Button Overlay */}
+                <button
+                  type="button"
+                  onClick={handleToggleWishlist}
+                  className="absolute top-4 right-4 p-2.5 bg-white/90 hover:bg-white text-rose-500 rounded-full backdrop-blur-md shadow-md transition-transform hover:scale-110 z-10"
+                  title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+                >
+                  <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}`} />
+                </button>
+
                 <span
-                  className={`absolute top-4 right-4 text-xs font-extrabold px-3 py-1 rounded-full backdrop-blur-md shadow-xs border ${
+                  className={`absolute bottom-4 left-4 text-xs font-extrabold px-3 py-1 rounded-full backdrop-blur-md shadow-xs border ${
                     isInStock
                       ? 'bg-emerald-500/90 text-white border-emerald-400'
                       : 'bg-red-500/90 text-white border-red-400'
@@ -207,6 +235,19 @@ const ProductDetailsModal = ({ isOpen, onClose, product, onAddToCart }) => {
 
               {/* Action Buttons */}
               <div className="pt-4 border-t border-slate-100 flex items-center space-x-3">
+                <button
+                  type="button"
+                  onClick={handleToggleWishlist}
+                  className={`p-3 rounded-2xl border transition-all flex items-center justify-center ${
+                    isWishlisted
+                      ? 'bg-rose-50 border-rose-200 text-rose-600 shadow-xs'
+                      : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-rose-50 hover:text-rose-600'
+                  }`}
+                  title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+                >
+                  <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                </button>
+
                 <button
                   onClick={handleAdd}
                   disabled={!isInStock}

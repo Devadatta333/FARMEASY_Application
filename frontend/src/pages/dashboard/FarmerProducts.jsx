@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import ProductCard from '../../components/products/ProductCard';
@@ -33,11 +34,13 @@ const CATEGORIES = [
 ];
 
 const FarmerProducts = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Search & Filter state
-  const [searchTerm, setSearchTerm] = useState('');
+  const initialQuery = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Modal States
@@ -48,6 +51,13 @@ const FarmerProducts = () => {
   useEffect(() => {
     fetchFarmerProducts();
   }, []);
+
+  useEffect(() => {
+    const q = searchParams.get('search');
+    if (q !== null) {
+      setSearchTerm(q);
+    }
+  }, [searchParams]);
 
   const fetchFarmerProducts = async () => {
     try {
@@ -194,7 +204,14 @@ const FarmerProducts = () => {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (e.target.value) {
+                    setSearchParams({ search: e.target.value });
+                  } else {
+                    setSearchParams({});
+                  }
+                }}
                 placeholder="Search my products..."
                 className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
               />

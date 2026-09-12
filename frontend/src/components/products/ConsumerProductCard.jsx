@@ -1,8 +1,15 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Star, Eye, Tractor, CheckCircle, ShieldCheck } from 'lucide-react';
+import { toggleWishlistItem } from '../../redux/slices/wishlistSlice';
+import { ShoppingCart, Star, Eye, Tractor, ShieldCheck, Heart } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const ConsumerProductCard = ({ product, onViewDetails, onAddToCart }) => {
+  const dispatch = useDispatch();
+  const { wishlistIds } = useSelector((state) => state.wishlist || { wishlistIds: [] });
+  const isWishlisted = wishlistIds.includes(product._id);
+
   const getImageUrl = (img) => {
     if (!img) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
     const url = typeof img === 'string' ? img : img.url;
@@ -19,11 +26,21 @@ const ConsumerProductCard = ({ product, onViewDetails, onAddToCart }) => {
   const farmerName = product.farmer?.name || 'Local Verified Farmer';
   const isInStock = product.quantity > 0;
 
+  const handleToggleWishlist = (e) => {
+    e.stopPropagation();
+    dispatch(toggleWishlistItem(product));
+    if (isWishlisted) {
+      toast.success(`Removed "${product.name}" from wishlist`);
+    } else {
+      toast.success(`Saved "${product.name}" to wishlist! ❤️`);
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
-      className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-xl transition-all duration-200 flex flex-col justify-between group"
+      className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover:shadow-xl transition-all duration-200 flex flex-col justify-between group relative"
     >
       <div>
         {/* Produce Image Container */}
@@ -39,16 +56,15 @@ const ConsumerProductCard = ({ product, onViewDetails, onAddToCart }) => {
             {product.category}
           </span>
 
-          {/* Stock Status Badge */}
-          <span
-            className={`absolute top-3 right-3 text-[10px] font-extrabold px-2.5 py-1 rounded-full backdrop-blur-md shadow-xs border ${
-              isInStock
-                ? 'bg-emerald-500/90 text-white border-emerald-400'
-                : 'bg-red-500/90 text-white border-red-400'
-            }`}
+          {/* Wishlist Heart Button Overlay */}
+          <button
+            type="button"
+            onClick={handleToggleWishlist}
+            className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white text-rose-500 rounded-full backdrop-blur-md shadow-md transition-transform hover:scale-110"
+            title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
           >
-            {isInStock ? 'In Stock' : 'Out of Stock'}
-          </span>
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}`} />
+          </button>
         </div>
 
         {/* Card Body */}

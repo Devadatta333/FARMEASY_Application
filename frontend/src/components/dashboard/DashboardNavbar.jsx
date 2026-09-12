@@ -2,20 +2,34 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/slices/authSlice';
-import { Menu, Bell, LogOut, Search, User as UserIcon, Shield } from 'lucide-react';
+import { Menu, Bell, LogOut, Search, ShoppingCart, User as UserIcon, Shield } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const DashboardNavbar = ({ onOpenMobileSidebar, title = 'Dashboard' }) => {
   const { user } = useSelector((state) => state.auth);
+  const { totalItems } = useSelector((state) => state.cart || { totalItems: 0 });
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showNotifications, setShowNotifications] = useState(false);
+  const [navSearchQuery, setNavSearchQuery] = useState('');
 
   const handleLogout = () => {
     dispatch(logout());
     toast.success('Logged out successfully');
     navigate('/login');
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!navSearchQuery.trim()) return;
+
+    const term = navSearchQuery.trim();
+    if (user?.role === 'farmer') {
+      navigate(`/dashboard/farmer/products?search=${encodeURIComponent(term)}`);
+    } else {
+      navigate(`/dashboard/user/products?search=${encodeURIComponent(term)}`);
+    }
   };
 
   const getRoleBadge = (role) => {
@@ -49,17 +63,35 @@ const DashboardNavbar = ({ onOpenMobileSidebar, title = 'Dashboard' }) => {
         </div>
       </div>
 
-      {/* Right: Search, Notifications & User Actions */}
+      {/* Right: Search, Cart, Notifications & User Actions */}
       <div className="flex items-center space-x-3 sm:space-x-4">
-        {/* Search Input Placeholder */}
-        <div className="hidden lg:flex items-center bg-slate-100/80 border border-slate-200/80 rounded-xl px-3 py-1.5 w-64 text-slate-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 transition-all">
+        {/* Search Input Engine */}
+        <form onSubmit={handleSearchSubmit} className="hidden lg:flex items-center bg-slate-100/80 border border-slate-200/80 rounded-xl px-3 py-1.5 w-64 text-slate-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 transition-all">
           <Search className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
           <input
             type="text"
-            placeholder="Search products, orders..."
+            value={navSearchQuery}
+            onChange={(e) => setNavSearchQuery(e.target.value)}
+            placeholder="Search products, crops..."
             className="bg-transparent text-xs text-slate-700 focus:outline-none w-full"
           />
-        </div>
+        </form>
+
+        {/* Shopping Cart Shortcut for Consumers */}
+        {user?.role !== 'farmer' && (
+          <button
+            onClick={() => navigate('/dashboard/user/cart')}
+            className="relative p-2 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors"
+            title="Shopping Cart"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-xs animate-bounce">
+                {totalItems}
+              </span>
+            )}
+          </button>
+        )}
 
         {/* Notifications Icon & Popover */}
         <div className="relative">
@@ -86,7 +118,7 @@ const DashboardNavbar = ({ onOpenMobileSidebar, title = 'Dashboard' }) => {
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                   <p className="font-semibold text-slate-800">System Ready</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">Phase 2 Dashboard module loaded.</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Shopping Cart & Search Engine loaded.</p>
                 </div>
               </div>
             </div>
