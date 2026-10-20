@@ -1,0 +1,41 @@
+# FarmEasy Integrated Pest & Disease Management Guide
+
+## Principles of Integrated Pest Management (IPM)
+1. Cultural Controls: Crop rotation with non-host families, clean cultivation, removal of infected crop residues, summer deep ploughing to expose pupae and soil pathogens to sunlight.
+2. Physical & Mechanical Controls: Yellow sticky traps for whiteflies and aphids (10-15 traps/acre), blue sticky traps for thrips, pheromone traps for Helicoverpa and Spodoptera (5-8 traps/acre), light traps for nocturnal moths.
+3. Biological Controls: Beneficial predators (Ladybird beetles, Syrphid fly larvae, Chrysoperla carnea), parasitoids (Trichogramma chilonis egg parasitoid cards at 50,000 eggs/ha), entomopathogenic fungi (Beauveria bassiana, Metarhizium anisopliae, Verticillium lecanii).
+4. Chemical Controls: Use selective, low-toxicity eco-friendly insecticides only when pest populations cross Economic Threshold Levels (ETL).
+
+## Major Crop Diseases and Organic/Biocontrol Solutions
+
+### Late Blight of Potato & Tomato (Phytophthora infestans)
+- Symptoms: Water-soaked dark brown to purplish-black lesions on leaves with whitish mold growth on underside in humid conditions. Rapid stem girdling and tuber/fruit rotting.
+- Favorable conditions: Cool temperatures (12-18°C) with high relative humidity (>90%).
+- Prevention & Control:
+  - Preventive spray of Trichoderma viride / harzianum (5g/L) on soil and foliar.
+  - Prophylactic spray of Copper oxychloride (2.5 g/L) or Bordeaux mixture (1%) before disease onset.
+  - Avoid overhead irrigation and ensure good aeration between plant canopies.
+  - Destroy infected plant residues immediately to prevent spread.
+
+### Powdery Mildew (Erysiphe / Leveillula spp.)
+- Symptoms: White powdery talc-like patches on upper and lower surface of leaves, stems, and buds. Affected leaves turn yellow, curl, and drop prematurely.
+- Prevention & Control:
+  - Spray wettable sulphur (2-3 g/L) or potassium bicarbonate (3-5 g/L).
+  - Spray neem oil (5 ml/L) mixed with mild soap emulsifier (1 ml/L).
+  - Bio-agent: Ampelomyces quisqualis foliar spray.
+
+### Wilt Diseases (Fusarium & Ralstonia solanacearum)
+- Symptoms: Sudden drooping of leaves while still green, vascular browning inside stem vascular bundles.
+- Control:
+  - Seed and seedling root dip in Trichoderma viride (10 g/L).
+  - Incorporate neem cake (250 kg/ha) into soil during land preparation.
+  - Soil solarization with clear polythene sheets (25 micron) during peak summer for 4-6 weeks.
+  - Crop rotation with maize, sorghum, or marigold (tagetes) which produce nematicidal exudates.
+
+## Organic Formulations (Preparation and Dosage)
+
+### Neem Oil Formulation (Azadirachtin)
+- Mix 5 ml of cold-pressed neem oil (1500 to 10000 ppm) with 1 ml liquid dishwashing soap or Khadi soap in 1 liter of clean lukewarm water. Shake vigorously until milky white emulsion forms. Spray in late afternoon to avoid photo-degradation. Repels whiteflies, aphids, mites, and leaf miners.
+
+### Jeevamrutha (Microbial Inoculant)
+- Recipe for 1 acre: 10 kg indigenous cow dung + 10 L cow urine + 2 kg jaggery + 2 kg pulse flour (besan) + handful of virgin forest or bund soil in 200 L water. Stir twice daily for 5-7 days. Apply via drip irrigation or spray to boost soil microbial activity and plant resistance.

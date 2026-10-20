@@ -1,0 +1,45 @@
+# FarmEasy Agronomy Guide: Major Crop Cultivation & Management
+
+## 1. Rice (Paddy)
+- Season: Kharif (June-July to November-December).
+- Soil: Clayey or loamy soils with high water retention capacity; pH 5.5 to 7.0.
+- Sowing & Seed Rate: 20-25 kg/ha for transplanted paddy; 40-50 kg/ha for direct seeded rice (DSR).
+- Nursery Management: Treat seeds with Trichoderma harzianum (4g/kg) or Carbendazim (2g/kg) to prevent blast and foot rot.
+- Water Management: Maintain 2-5 cm standing water from transplanting to grain filling. Drain water 10-15 days before harvest. Alternate wetting and drying (AWD) saves up to 30% water without reducing yield.
+- Nutrient Schedule: Recommended NPK ratio is 120:60:40 kg/ha. Apply all P and K with 1/3 N at basal transplanting; top-dress remaining N in two equal splits at tillering and panicle initiation. Apply Zinc Sulphate at 25 kg/ha basal to avoid Khaira disease.
+- Harvesting: Harvest when 80-85% grains turn golden yellow and moisture content drops to 20-22%.
+
+## 2. Wheat
+- Season: Rabi (November sowing, March-April harvest).
+- Soil: Well-drained fertile loamy soils; optimal pH 6.0 to 7.5.
+- Sowing: Seed rate is 100 kg/ha for timely sown, 125 kg/ha for late sown. Spacing 20-22.5 cm between rows.
+- Critical Irrigation Stages:
+  1. Crown Root Initiation (CRI) at 21 days after sowing (most critical).
+  2. Tillering stage (40-45 DAS).
+  3. Late jointing stage (60-65 DAS).
+  4. Flowering stage (80-85 DAS).
+  5. Milking stage (100-105 DAS).
+  6. Dough stage (115-120 DAS).
+- Nutrient Schedule: NPK 120:60:40 kg/ha. Basal: half N, full P, full K. Top dress remaining N at first irrigation (CRI stage) and second irrigation.
+
+## 3. Tomato
+- Season: Kharif, Rabi, and summer in non-frost regions.
+- Soil: Deep, well-drained sandy loam or clay loam rich in organic matter; pH 6.0 to 7.0.
+- Nursery & Spacing: 100-150 g seeds/ha for hybrids. Transplant 25-30 day old seedlings at 60x45 cm or 75x60 cm.
+- Staking: Provide bamboo staking or trellis 30 days after transplanting to keep foliage and fruits off the ground, reducing fruit rot and blight.
+- Irrigation: Drip irrigation with fertigation is optimal. Avoid overhead watering to prevent foliar fungal diseases.
+- Key Pests & Diseases: Fruit borer (Helicoverpa armigera), Early blight (Alternaria solani), Late blight (Phytophthora infestans), Tomato Yellow Leaf Curl Virus (TYLCV transmitted by whitefly).
+
+## 4. Onion
+- Season: Kharif, Late Kharif, and Rabi.
+- Soil: Friable, sandy loam rich in organic matter with good drainage; pH 6.5 to 7.5.
+- Nursery & Transplanting: 8-10 kg seeds/ha. Transplant 6-7 week old seedlings at 15x10 cm spacing.
+- Nutrient Management: NPK 100:50:50 kg/ha plus 20-30 kg Sulphur/ha to improve bulb pungency, storage quality, and firmness.
+- Harvesting & Curing: Stop irrigation 10-15 days before harvest. Harvest when 50% tops fall over. Cure bulbs in shade for 7-10 days before storage to seal necks and prevent neck rot.
+
+## 5. Cotton
+- Season: Kharif (April-May in North India, June-July in Central and South India).
+- Soil: Deep black cotton soils (Vertisols) or alluvial soils; pH 6.0 to 8.0.
+- Sowing: Seed rate for Bt Cotton hybrids is 1.5-2.0 kg/ha (approx 18,000-20,000 plants/ha). Spacing 90x60 cm or 120x45 cm.
+- Intercropping: Cowpea, green gram, or soybean as intercrops enhances natural enemy population (predatory ladybird beetles, Chrysoperla) against sucking pests.
+- Pests: Whitefly, Aphids, Thrips, and Pink Bollworm. Install pheromone traps at 5-8 traps/ha for monitoring.

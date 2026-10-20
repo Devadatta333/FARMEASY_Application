@@ -19,6 +19,7 @@ import {
   Truck,
   ShieldCheck,
   Tag,
+  Bot,
 } from 'lucide-react';
 import { Button } from '../../components/ui';
 import toast from 'react-hot-toast';
@@ -54,6 +55,7 @@ export default function ConsumerDashboard() {
           category: product.category || 'Produce',
           image: product.image,
           farmerName: product.farmerName || 'Verified Local Farmer',
+          farmerId: product.farmerId || product.farmer?._id || product.farmer,
         },
         quantity: 1,
       })
@@ -63,10 +65,9 @@ export default function ConsumerDashboard() {
 
   const consumerName = user?.name || data?.consumer?.name || 'Consumer';
   const stats = data?.stats || {
-    totalOrders: 8,
-    cartItems: 3,
-    wishlistItems: 12,
-    recentlyViewed: 15,
+    totalOrders: 0,
+    wishlistItems: 0,
+    recentlyViewed: 0,
   };
   const categories = data?.featuredCategories || [];
   const products = data?.recommendedProducts || [];
@@ -98,28 +99,45 @@ export default function ConsumerDashboard() {
               </p>
             </div>
 
-            <Button
-              variant="outline"
-              size="md"
-              className="bg-white text-emerald-900 hover:bg-emerald-50 border-white shadow-sm shrink-0"
-              onClick={() => navigate('/dashboard/user/products')}
-              rightIcon={<ArrowRight className="w-4 h-4" />}
-            >
-              Explore Fresh Crops
-            </Button>
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <Button
+                variant="harvest"
+                size="md"
+                className="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold border-none shadow-md"
+                onClick={() => navigate('/dashboard/user/ai-assistant')}
+                leftIcon={<Bot className="w-4 h-4 text-slate-950" />}
+              >
+                AI Produce Guide
+              </Button>
+              <Button
+                variant="outline"
+                size="md"
+                className="bg-white/10 hover:bg-white/20 text-white border-white/30 shadow-sm"
+                onClick={() => navigate('/dashboard/user/products')}
+                rightIcon={<ArrowRight className="w-4 h-4" />}
+              >
+                Explore Crops
+              </Button>
+            </div>
           </div>
         </motion.div>
 
         {/* Quick Statistics Strip */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          <StatCard
-            title="My Orders"
-            value={loading ? '...' : stats.totalOrders}
-            change="2 in transit"
-            icon={ShoppingBag}
-            color="emerald"
-            chartData={[3, 4, 5, 5, 6, 7, 8]}
-          />
+          <div
+            onClick={() => navigate('/dashboard/user/orders')}
+            className="cursor-pointer"
+            title="View Order History"
+          >
+            <StatCard
+              title="My Orders"
+              value={loading ? '...' : stats.totalOrders}
+              change={loading ? '' : 'Live updated'}
+              icon={ShoppingBag}
+              color="emerald"
+              chartData={[]}
+            />
+          </div>
 
           <div
             onClick={() => navigate('/dashboard/user/cart')}
@@ -132,27 +150,39 @@ export default function ConsumerDashboard() {
               change="Tap to checkout →"
               icon={ShoppingCart}
               color="blue"
-              chartData={[1, 2, 2, 3, 2, 3, totalItems || 3]}
+              chartData={[]}
             />
           </div>
 
-          <StatCard
-            title="Saved in Wishlist"
-            value={loading ? '...' : stats.wishlistItems}
-            change="Active alerts"
-            icon={Heart}
-            color="amber"
-            chartData={[6, 8, 9, 10, 11, 12, 12]}
-          />
+          <div
+            onClick={() => navigate('/dashboard/user/wishlist')}
+            className="cursor-pointer"
+            title="View Saved Items"
+          >
+            <StatCard
+              title="Saved in Wishlist"
+              value={loading ? '...' : stats.wishlistItems}
+              change="Active alerts"
+              icon={Heart}
+              color="amber"
+              chartData={[]}
+            />
+          </div>
 
-          <StatCard
-            title="Recently Viewed"
-            value={loading ? '...' : stats.recentlyViewed}
-            change="Fresh crops"
-            icon={Eye}
-            color="purple"
-            chartData={[8, 10, 11, 13, 14, 15, 15]}
-          />
+          <div
+            onClick={() => navigate('/dashboard/user/products')}
+            className="cursor-pointer"
+            title="Browse Produce Catalog"
+          >
+            <StatCard
+              title="Available Produce"
+              value={loading ? '...' : stats.recentlyViewed}
+              change="Fresh crops"
+              icon={Eye}
+              color="purple"
+              chartData={[]}
+            />
+          </div>
         </div>
 
         {/* Featured Categories */}
@@ -171,6 +201,11 @@ export default function ConsumerDashboard() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {categories.length === 0 && !loading && (
+              <div className="col-span-full py-6 text-center text-slate-500 text-sm">
+                No categories available at the moment.
+              </div>
+            )}
             {categories.map((cat) => (
               <motion.div
                 key={cat.id}
@@ -213,6 +248,11 @@ export default function ConsumerDashboard() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {products.length === 0 && !loading && (
+              <div className="col-span-full py-8 text-center text-slate-500 text-sm">
+                No recommended produce at this time. Check back later!
+              </div>
+            )}
             {products.map((prod) => (
               <motion.div
                 key={prod.id}
@@ -283,21 +323,35 @@ export default function ConsumerDashboard() {
               <ShoppingBag className="w-4 h-4 text-emerald-600" />
               <span>Recent Orders & Deliveries</span>
             </h3>
-            <span className="text-xs text-slate-400">Live Status</span>
+            <Link
+              to="/dashboard/user/orders"
+              className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline"
+            >
+              View all orders &rarr;
+            </Link>
           </div>
 
           <div className="space-y-3">
+            {orders.length === 0 && !loading && (
+              <div className="py-6 text-center text-slate-500 text-sm">
+                No recent orders found. Start shopping fresh produce!
+              </div>
+            )}
             {orders.map((ord) => (
               <div
                 key={ord.id}
-                className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                onClick={() => navigate('/dashboard/user/orders')}
+                className="p-3.5 rounded-2xl bg-slate-50/70 border border-slate-100 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 cursor-pointer group"
+                title="View order details"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-100/80 text-emerald-800 flex items-center justify-center font-bold text-sm shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-100/80 text-emerald-800 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
                     📦
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-800">{ord.item}</h4>
+                    <h4 className="text-xs font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">
+                      {ord.item}
+                    </h4>
                     <p className="text-[11px] text-slate-500">
                       ID: <strong>{ord.id}</strong> • Farm: {ord.farmer}
                     </p>

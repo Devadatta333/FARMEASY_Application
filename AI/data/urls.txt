@@ -1,0 +1,8 @@
+# FarmEasy Trusted Agricultural Web Resources (URLs to ingest)
+# Lines starting with # are comments and ignored by the ingestion engine.
+# Only safe, verified public HTTPS URLs are allowed.
+# Internal/private IPs and localhost URLs are strictly blocked by the ingester.
+
+# Example public verified resource URLs:
+# https://agricoop.nic.in/en/major-crops
+# https://icar.org.in/content/agricultural-technologies

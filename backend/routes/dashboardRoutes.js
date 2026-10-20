@@ -4,12 +4,14 @@ import {
   getConsumerDashboardStats,
   getAdminDashboardStats,
 } from "../controllers/dashboardController.js";
+import { getFarmerAnalytics } from "../controllers/analyticsController.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Farmer Dashboard API Endpoint
+// Farmer Dashboard & Analytics API Endpoints
 router.get("/farmer", protect, authorizeRoles("farmer"), getFarmerDashboardStats);
+router.get("/farmer/analytics", protect, authorizeRoles("farmer"), getFarmerAnalytics);
 
 // Consumer/User Dashboard API Endpoint
 router.get(

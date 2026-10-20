@@ -18,6 +18,7 @@ import ResetPassword from './pages/ResetPassword';
 import DashboardRedirect from './pages/dashboard/DashboardRedirect';
 import FarmerDashboard from './pages/dashboard/FarmerDashboard';
 import FarmerProducts from './pages/dashboard/FarmerProducts';
+import FarmerAnalytics from './pages/dashboard/FarmerAnalytics';
 import ConsumerDashboard from './pages/dashboard/ConsumerDashboard';
 import ConsumerProducts from './pages/dashboard/ConsumerProducts';
 import CartPage from './pages/dashboard/CartPage';
@@ -27,6 +28,7 @@ import SettingsPage from './pages/dashboard/SettingsPage';
 import WishlistPage from './pages/dashboard/WishlistPage';
 import OrdersPage from './pages/dashboard/OrdersPage';
 import PlaceholderModule from './pages/dashboard/PlaceholderModule';
+import AIChatbot from './pages/dashboard/AIChatbot';
 
 import Unauthorized from './pages/Unauthorized';
 import NotFound from './pages/NotFound';
@@ -113,15 +115,18 @@ function App() {
               <Route path="/dashboard/products" element={<PageWrapper><ConsumerProducts /></PageWrapper>} />
               <Route path="/dashboard/crops" element={<PageWrapper><ConsumerProducts /></PageWrapper>} />
               <Route path="/dashboard/cart" element={<PageWrapper><CartPage /></PageWrapper>} />
+              <Route path="/dashboard/analytics" element={<Navigate to="/dashboard/farmer/analytics" replace />} />
             </Route>
 
             {/* Farmer Specific Protected Routes */}
             <Route element={<ProtectedRoute allowedRoles={['farmer']} />}>
               <Route path="/dashboard/farmer" element={<PageWrapper><FarmerDashboard /></PageWrapper>} />
+              <Route path="/dashboard/farmer/ai-assistant" element={<PageWrapper><AIChatbot /></PageWrapper>} />
               <Route path="/dashboard/farmer/products" element={<PageWrapper><FarmerProducts /></PageWrapper>} />
               <Route path="/dashboard/farmer/browse-crops" element={<PageWrapper><ConsumerProducts /></PageWrapper>} />
               <Route path="/dashboard/farmer/cart" element={<PageWrapper><CartPage /></PageWrapper>} />
               <Route path="/dashboard/farmer/orders" element={<PageWrapper><OrdersPage /></PageWrapper>} />
+              <Route path="/dashboard/farmer/analytics" element={<PageWrapper><FarmerAnalytics /></PageWrapper>} />
               <Route path="/dashboard/farmer/profile" element={<PageWrapper><ProfilePage /></PageWrapper>} />
               <Route path="/dashboard/farmer/settings" element={<PageWrapper><SettingsPage /></PageWrapper>} />
               <Route path="/dashboard/farmer/*" element={<PageWrapper><PlaceholderModule /></PageWrapper>} />
@@ -131,6 +136,8 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['consumer', 'user']} />}>
               <Route path="/dashboard/user" element={<PageWrapper><ConsumerDashboard /></PageWrapper>} />
               <Route path="/dashboard/consumer" element={<PageWrapper><ConsumerDashboard /></PageWrapper>} />
+              <Route path="/dashboard/user/ai-assistant" element={<PageWrapper><AIChatbot /></PageWrapper>} />
+              <Route path="/dashboard/consumer/ai-assistant" element={<PageWrapper><AIChatbot /></PageWrapper>} />
               <Route path="/dashboard/user/products" element={<PageWrapper><ConsumerProducts /></PageWrapper>} />
               <Route path="/dashboard/consumer/products" element={<PageWrapper><ConsumerProducts /></PageWrapper>} />
               <Route path="/dashboard/user/cart" element={<PageWrapper><CartPage /></PageWrapper>} />

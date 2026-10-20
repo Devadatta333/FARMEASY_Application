@@ -1,0 +1,32 @@
+# FarmEasy Soil Health, Irrigation, and Post-Harvest Produce Storage Guide
+
+## Soil Health and Organic Matter
+- Ideal Soil Organic Carbon (SOC): Maintain above 0.75% to 1.0% for resilient microbial activity, nutrient holding capacity, and drought tolerance.
+- Organic Amendments:
+  - Farm Yard Manure (FYM): Apply well-decomposed FYM at 10-12 tonnes/ha 3-4 weeks prior to sowing.
+  - Vermicompost: Apply 2.5-3 tonnes/ha; rich in plant hormones, humic acids, and micronutrients.
+  - Green Manuring: Grow Dhaincha (Sesbania aculeata) or Sunnhemp (Crotalaria juncea) and incorporate into soil at 45-50 days (flowering stage). Adds 20-25 tonnes of green biomass and 60-80 kg N/ha naturally.
+- Soil Testing: Test soil every 2 years for electrical conductivity (EC), pH, organic carbon, available N, P, K, and secondary/micronutrients (S, Zn, B, Fe, Cu, Mn).
+
+## Modern Irrigation & Micro-Irrigation Efficiency
+- Drip Irrigation: Delivers water directly to the plant root zone with 90-95% water use efficiency. Reduces weed growth, fungal foliar infections, and evaporation losses by 40-60%.
+- Sprinkler Irrigation: Suitable for closely spaced crops like wheat, pulses, groundnut, and vegetables on undulating terrains. Saves 30-40% water compared to flood irrigation.
+- Fertigation: Supplying water-soluble fertilizers (e.g., 19:19:19, 0:52:34, 13:0:45) through drip lines ensures uniform nutrient delivery and reduces fertilizer wastage by 30%.
+- Moisture Conservation: Apply organic mulch (paddy straw, sugarcane bagasse) at 5-7 cm thickness or silver-black plastic mulch (25-30 micron) to conserve soil moisture, regulate root zone temperature, and eliminate weeds.
+
+## Produce Storage and Freshness Preservation (Farmer & Consumer Guide)
+
+### Fresh Vegetables (Tomatoes, Onions, Potatoes, Greens)
+- Tomatoes: Store ripe tomatoes at room temperature (18-22°C) stem-side down away from direct sunlight. Refrigeration below 12°C degrades flavor-producing volatile esters and causes mealy texture. Only refrigerate fully ripe sliced tomatoes.
+- Potatoes: Store in a dark, cool (7-10°C), well-ventilated dry area. Never store in plastic bags or near onions, as onions emit ethylene gas which accelerates potato sprouting. Exposure to light causes solanine production (green skin), which is toxic.
+- Onions & Garlic: Store in mesh bags or open wooden crates in a cool, dry, airy location (temperature 15-25°C, relative humidity 65-70%). High humidity induces root sprouting and fungal neck rot.
+- Leafy Greens (Spinach, Coriander, Mint, Fenugreek): Trim root ends, wrap in dry paper towel to absorb excess moisture, and place inside an airtight container or perforated vegetable bag in the refrigerator crisper drawer (4-6°C). Stays crisp for 7-10 days.
+
+### Fresh Fruits
+- Bananas, Mangoes, Papayas: Climax fruits that release ethylene during ripening. Store at room temperature until ripe. Keep away from other non-climacteric produce unless you wish to ripen them.
+- Apples & Pears: Can be stored in refrigerator crisper drawers for 3-4 weeks. Separate from leafy greens because apple ethylene causes yellowing of green leaves.
+
+### Grains & Pulses Storage
+- Safe Moisture Content: Dry food grains (wheat, rice, maize) to below 12% moisture content and pulses to below 10% before bagging. High moisture causes fungal aflatoxin and insect infestation.
+- Natural Insect Deterrents: Mix dried neem leaves (Azadirachta indica) at 1-2 kg per 100 kg grain, or coat pulses with edible vegetable oil (mustard or castor oil at 3-5 ml/kg) to prevent pulse beetle (Callosobruchus chinensis) oviposition.
+- Storage Structure: Use airtight metal bins or hermetic bags (PICS bags) elevated 10-15 cm above ground on wooden pallets away from damp walls.

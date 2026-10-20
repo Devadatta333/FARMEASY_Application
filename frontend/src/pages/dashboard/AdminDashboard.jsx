@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import StatCard from '../../components/dashboard/StatCard';
@@ -22,6 +23,7 @@ import { Button } from '../../components/ui';
 import toast from 'react-hot-toast';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,18 +40,40 @@ export default function AdminDashboard() {
   }, []);
 
   const handleAdminAction = (actionName) => {
-    toast.success(`${actionName} console panel activated!`, {
+    toast.success(`${actionName} console panel active!`, {
       icon: '⚡',
     });
   };
 
+  const handleExportAudit = () => {
+    const auditData = {
+      timestamp: new Date().toISOString(),
+      platform: 'FarmEasy Global Operations',
+      node: 'NODE-INDIA-WEST',
+      status: 'ONLINE',
+      stats,
+      recentUsersSample: recentUsers,
+      recentTransactionsSample: recentOrders,
+    };
+    const blob = new Blob([JSON.stringify(auditData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `farmeasy-audit-log-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success('System Audit Log downloaded successfully!', { icon: '📄' });
+  };
+
   const stats = data?.stats || {
-    totalUsers: 142,
-    totalFarmers: 45,
-    totalConsumers: 97,
-    totalProducts: 340,
-    totalOrders: 1250,
-    totalRevenue: 485000,
+    totalUsers: 0,
+    totalFarmers: 0,
+    totalConsumers: 0,
+    totalProducts: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
   };
   const recentUsers = data?.recentUsers || [];
   const recentOrders = data?.recentOrders || [];
@@ -84,7 +108,7 @@ export default function AdminDashboard() {
               variant="outline"
               size="md"
               className="bg-white/10 text-white hover:bg-white/20 border-white/20 backdrop-blur-md shrink-0"
-              onClick={() => handleAdminAction('System Audit Export')}
+              onClick={handleExportAudit}
               leftIcon={<FileText className="w-4 h-4" />}
             >
               Export Audit Log
@@ -97,42 +121,54 @@ export default function AdminDashboard() {
           <StatCard
             title="Total Users"
             value={loading ? '...' : stats.totalUsers}
-            change="14 this week"
+            change={loading ? '' : 'Live updated'}
             icon={Users}
             color="purple"
-            chartData={[110, 118, 124, 130, 135, 138, 142]}
+            chartData={[]}
           />
           <StatCard
             title="Farmers"
             value={loading ? '...' : stats.totalFarmers}
-            change="5 new"
+            change={loading ? '' : 'Live updated'}
             icon={Tractor}
             color="amber"
-            chartData={[32, 35, 36, 38, 40, 42, 45]}
+            chartData={[]}
           />
-          <StatCard
-            title="Products Listed"
-            value={loading ? '...' : stats.totalProducts}
-            change="24 active"
-            icon={Package}
-            color="emerald"
-            chartData={[280, 290, 305, 312, 320, 335, 340]}
-          />
-          <StatCard
-            title="Total Orders"
-            value={loading ? '...' : stats.totalOrders}
-            change="125 weekly"
-            icon={ShoppingBag}
-            color="blue"
-            chartData={[980, 1020, 1070, 1120, 1180, 1220, 1250]}
-          />
+          <div
+            onClick={() => navigate('/dashboard/crops')}
+            className="cursor-pointer"
+            title="View Product Catalog"
+          >
+            <StatCard
+              title="Products Listed"
+              value={loading ? '...' : stats.totalProducts}
+              change={loading ? '' : 'Live updated'}
+              icon={Package}
+              color="emerald"
+              chartData={[]}
+            />
+          </div>
+          <div
+            onClick={() => navigate('/dashboard/admin/orders')}
+            className="cursor-pointer"
+            title="View Platform Orders"
+          >
+            <StatCard
+              title="Total Orders"
+              value={loading ? '...' : stats.totalOrders}
+              change={loading ? '' : 'Live updated'}
+              icon={ShoppingBag}
+              color="blue"
+              chartData={[]}
+            />
+          </div>
           <StatCard
             title="Total GMV"
             value={loading ? '...' : `₹${stats.totalRevenue.toLocaleString('en-IN')}`}
-            change="32% MoM"
+            change={loading ? '' : 'Live updated'}
             icon={IndianRupee}
             color="teal"
-            chartData={[350000, 380000, 410000, 435000, 460000, 475000, 485000]}
+            chartData={[]}
           />
         </div>
 
@@ -168,7 +204,7 @@ export default function AdminDashboard() {
             </button>
 
             <button
-              onClick={() => handleAdminAction('Product Moderation')}
+              onClick={() => navigate('/dashboard/crops')}
               className="flex items-center gap-3 p-3.5 rounded-2xl bg-emerald-50/60 text-emerald-900 hover:bg-emerald-100 border border-emerald-200/60 transition-all font-semibold text-xs text-left"
             >
               <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">
@@ -198,7 +234,10 @@ export default function AdminDashboard() {
                 <UserCheck className="w-4 h-4 text-emerald-600" />
                 <span>Recent Platform Registrations</span>
               </h3>
-              <span className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer">
+              <span
+                onClick={() => handleAdminAction('User Accounts Overview')}
+                className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer"
+              >
                 All accounts &rarr;
               </span>
             </div>
@@ -214,6 +253,13 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
+                  {recentUsers.length === 0 && !loading && (
+                    <tr>
+                      <td colSpan="4" className="py-6 text-center text-slate-500">
+                        No recent users found.
+                      </td>
+                    </tr>
+                  )}
                   {recentUsers.map((usr) => (
                     <tr key={usr._id || usr.email} className="hover:bg-slate-50/70 transition-colors">
                       <td className="py-3 px-3 font-semibold text-slate-800">{usr.name}</td>
@@ -252,7 +298,10 @@ export default function AdminDashboard() {
                 <ShoppingBag className="w-4 h-4 text-emerald-600" />
                 <span>Recent Platform Transactions</span>
               </h3>
-              <span className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer">
+              <span
+                onClick={() => navigate('/dashboard/admin/orders')}
+                className="text-xs font-semibold text-emerald-700 hover:underline cursor-pointer"
+              >
                 All transactions &rarr;
               </span>
             </div>
@@ -268,6 +317,13 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
+                  {recentOrders.length === 0 && !loading && (
+                    <tr>
+                      <td colSpan="4" className="py-6 text-center text-slate-500">
+                        No recent transactions found.
+                      </td>
+                    </tr>
+                  )}
                   {recentOrders.map((ord) => (
                     <tr key={ord.id} className="hover:bg-slate-50/70 transition-colors">
                       <td className="py-3 px-3 font-semibold text-slate-800">{ord.customer}</td>

@@ -66,6 +66,12 @@ export default function DashboardSidebar({
           { name: 'Dashboard', path: '/dashboard/user', icon: LayoutDashboard },
           { name: 'Browse Crops', path: '/dashboard/user/products', icon: Package },
           {
+            name: 'AI Assistant',
+            path: '/dashboard/user/ai-assistant',
+            icon: Bot,
+            badge: 'AI',
+          },
+          {
             name: 'Cart',
             path: '/dashboard/user/cart',
             icon: ShoppingCart,

@@ -55,6 +55,14 @@ export default function FarmerDashboard() {
   };
   const activities = data?.recentActivities || [];
 
+  const handleQuickAction = (action) => {
+    if (action === 'List First Harvest') {
+      navigate('/dashboard/farmer/products');
+    } else {
+      toast.success(`${action} activated! 🌾`, { icon: '🤖' });
+    }
+  };
+
   return (
     <DashboardLayout title="Farmer Operations Hub">
       <div className="space-y-6">
@@ -120,35 +128,59 @@ export default function FarmerDashboard() {
 
         {/* 4 Stat Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          <StatCard
-            title="Total Products Listed"
-            value={loading ? '...' : stats.totalProducts}
-            change={stats.totalProducts > 0 ? "Active listings" : "No listings yet"}
-            icon={Package}
-            color="amber"
-          />
-          <StatCard
-            title="Total Orders Received"
-            value={loading ? '...' : stats.totalOrders}
-            change={stats.totalOrders > 0 ? "Orders placed" : "No orders yet"}
-            icon={ShoppingBag}
-            color="emerald"
-          />
-          <StatCard
-            title="Total Revenue (INR)"
-            value={loading ? '...' : `₹${stats.totalRevenue.toLocaleString('en-IN')}`}
-            change={stats.totalRevenue > 0 ? "Direct earnings" : "₹0 sales"}
-            icon={IndianRupee}
-            color="blue"
-          />
-          <StatCard
-            title="Pending Orders"
-            value={loading ? '...' : stats.pendingOrders}
-            change={stats.pendingOrders > 0 ? "Requires action" : "All cleared"}
-            trend={stats.pendingOrders > 0 ? "up" : "down"}
-            icon={Clock}
-            color="rose"
-          />
+          <div
+            onClick={() => navigate('/dashboard/farmer/products')}
+            className="cursor-pointer"
+            title="Manage Harvest Listings"
+          >
+            <StatCard
+              title="Total Products Listed"
+              value={loading ? '...' : stats.totalProducts}
+              change={stats.totalProducts > 0 ? "Active listings" : "No listings yet"}
+              icon={Package}
+              color="amber"
+            />
+          </div>
+          <div
+            onClick={() => navigate('/dashboard/farmer/orders')}
+            className="cursor-pointer"
+            title="View Received Orders"
+          >
+            <StatCard
+              title="Total Orders Received"
+              value={loading ? '...' : stats.totalOrders}
+              change={stats.totalOrders > 0 ? "Orders placed" : "No orders yet"}
+              icon={ShoppingBag}
+              color="emerald"
+            />
+          </div>
+          <div
+            onClick={() => navigate('/dashboard/farmer/analytics')}
+            className="cursor-pointer"
+            title="View Financial Analytics"
+          >
+            <StatCard
+              title="Total Revenue (INR)"
+              value={loading ? '...' : `₹${stats.totalRevenue.toLocaleString('en-IN')}`}
+              change={stats.totalRevenue > 0 ? "Direct earnings" : "₹0 sales"}
+              icon={IndianRupee}
+              color="blue"
+            />
+          </div>
+          <div
+            onClick={() => navigate('/dashboard/farmer/orders')}
+            className="cursor-pointer"
+            title="Action Pending Orders"
+          >
+            <StatCard
+              title="Pending Orders"
+              value={loading ? '...' : stats.pendingOrders}
+              change={stats.pendingOrders > 0 ? "Requires action" : "All cleared"}
+              trend={stats.pendingOrders > 0 ? "up" : "down"}
+              icon={Clock}
+              color="rose"
+            />
+          </div>
         </div>
 
         {/* Quick Actions Strip */}
@@ -193,7 +225,7 @@ export default function FarmerDashboard() {
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => toast.success('AI Advisory Hub Active! 🌾')}
+              onClick={() => navigate('/dashboard/farmer/ai-assistant')}
               leftIcon={<Bot className="w-3.5 h-3.5 text-emerald-700" />}
             >
               AI Advisory
